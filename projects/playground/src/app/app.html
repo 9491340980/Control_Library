@@ -1,0 +1,22 @@
+<main style="font-family: system-ui, sans-serif; max-width: 640px; margin: 3rem auto; padding: 0 1rem;">
+  <h1>Controls Playground</h1>
+  <p>Testing the <code>&lt;ch-button&gt;</code> control from the <strong>controls</strong> library.</p>
+
+  <h2>Variants</h2>
+  <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+    <ch-button variant="primary" (clicked)="onSave()">Primary</ch-button>
+    <ch-button variant="secondary">Secondary</ch-button>
+    <ch-button variant="outline">Outline</ch-button>
+    <ch-button variant="info">Info</ch-button>
+    <ch-button [disabled]="true">Disabled</ch-button>
+  </div>
+
+  <h2>Sizes</h2>
+  <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1.5rem;">
+    <ch-button size="md">Medium</ch-button>
+    <ch-button size="lg">Large</ch-button>
+  </div>
+
+  <h2>Event binding</h2>
+  <p>The primary button is wired to <code>(clicked)</code>. Clicked: <strong>{{ clickCount() }}</strong> time(s).</p>
+</main>

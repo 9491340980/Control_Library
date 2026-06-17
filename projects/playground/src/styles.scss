@@ -1,0 +1,8 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Load the control library's design tokens (local source during dev). */
+@use '../../controls/src/lib/styles/tokens';
+
+/* Third-party themes required by the ch-ng-* wrapper controls. */
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+@import '@ng-select/ng-select/themes/default.theme.css';

@@ -1,0 +1,8 @@
+/*
+ * Public theme entry point.
+ *
+ * Consuming apps import this ONCE in their global styles to get the design tokens:
+ *   @use 'controls/styles/theme';        // when installed from the registry
+ * or during local dev, import the source file directly.
+ */
+@forward '../src/lib/styles/tokens';
