@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { ChButton } from 'controls';
+import { ChButton } from '@9491340980/controls';
 
 @Component({
   selector: 'app-root',

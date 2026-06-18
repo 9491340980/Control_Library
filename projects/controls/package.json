@@ -1,6 +1,14 @@
 {
-  "name": "controls",
-  "version": "0.0.1",
+  "name": "@9491340980/controls",
+  "version": "1.0.2",
+  "description": "CareHigh shared Angular control library",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/9491340980/Control_Library.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "peerDependencies": {
     "@angular/common": "^20.3.0",
     "@angular/core": "^20.3.0",

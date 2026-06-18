@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>@9491340980/controls — Integration Guide</title>
+<style>
+  :root{
+    --o:#ea580c; --o-dark:#c2410c; --o-soft:#ffedd5;
+    --ink:#1f2937; --muted:#6b7280; --line:#e2e8f0; --bg:#f8fafc; --code-bg:#0f172a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       color:var(--ink);background:var(--bg);line-height:1.6}
+  .wrap{max-width:920px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+  header{border-bottom:3px solid var(--o);padding-bottom:1rem;margin-bottom:2rem}
+  h1{margin:0 0 .25rem;font-size:1.9rem}
+  h1 .pkg{color:var(--o)}
+  .sub{color:var(--muted);margin:0}
+  h2{margin:2.25rem 0 .75rem;font-size:1.3rem;border-left:4px solid var(--o);padding-left:.6rem}
+  h3{margin:1.5rem 0 .5rem;font-size:1.05rem}
+  p,li{font-size:.95rem}
+  code{background:#eef2f7;padding:.1rem .35rem;border-radius:4px;font-size:.85em;
+       font-family:ui-monospace,"Cascadia Code",Consolas,monospace}
+  pre{background:var(--code-bg);color:#e2e8f0;padding:1rem 1.1rem;border-radius:10px;overflow-x:auto;
+      font-size:.83rem;font-family:ui-monospace,Consolas,monospace;line-height:1.55}
+  pre .c{color:#7dd3fc}        /* comments / keywords highlight */
+  table{width:100%;border-collapse:collapse;margin:.5rem 0 1rem;font-size:.88rem}
+  th,td{text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#fff;color:var(--muted);text-transform:uppercase;font-size:.72rem;letter-spacing:.04em}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.25rem;margin:1rem 0}
+  .step{display:flex;gap:.7rem;align-items:flex-start;margin:.4rem 0}
+  .num{flex:0 0 auto;width:1.6rem;height:1.6rem;border-radius:50%;background:var(--o);color:#fff;
+       display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700}
+  .note{background:var(--o-soft);border-left:4px solid var(--o);padding:.7rem 1rem;border-radius:6px;margin:1rem 0;font-size:.9rem}
+  .warn{background:#fee2e2;border-left:4px solid #dc2626;padding:.7rem 1rem;border-radius:6px;margin:1rem 0;font-size:.9rem}
+  .ok{background:#dcfce7;border-left:4px solid #16a34a;padding:.7rem 1rem;border-radius:6px;margin:1rem 0;font-size:.9rem}
+  .pill{display:inline-block;background:var(--o-soft);color:var(--o-dark);border-radius:20px;
+        padding:.1rem .6rem;font-size:.75rem;font-weight:600}
+  .toc a{color:var(--o-dark);text-decoration:none}
+  .toc a:hover{text-decoration:underline}
+  .muted{color:var(--muted)}
+  footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Integrating <span class="pkg">@9491340980/controls</span></h1>
+  <p class="sub">Angular 20 control library &middot; published to GitHub Packages (private) &middot; v1.0.2</p>
+</header>
+
+<div class="card toc">
+  <strong>Contents</strong>
+  <ol>
+    <li><a href="#prereq">Prerequisites</a></li>
+    <li><a href="#auth">Step 1 — Authenticate to GitHub Packages</a></li>
+    <li><a href="#install">Step 2 — Install</a></li>
+    <li><a href="#theme">Step 3 — Load the theme</a></li>
+    <li><a href="#tailwind">Step 4 — Tailwind preset (optional)</a></li>
+    <li><a href="#use">Step 5 — Use the controls</a></li>
+    <li><a href="#forms">Forms, toasts &amp; modals</a></li>
+    <li><a href="#catalog">Control catalog</a></li>
+    <li><a href="#theming">Theming &amp; dark mode</a></li>
+    <li><a href="#update">Updating versions</a></li>
+    <li><a href="#trouble">Troubleshooting</a></li>
+  </ol>
+</div>
+
+<h2 id="prereq">1. Prerequisites</h2>
+<ul>
+  <li><strong>Angular 20</strong> app (the library is built on Angular 20 — major version must match).</li>
+  <li><strong>Node 18+</strong> and npm.</li>
+  <li>A <strong>GitHub personal access token</strong> with <code>read:packages</code> + <code>repo</code> scopes (the package is private).</li>
+</ul>
+
+<h2 id="auth">2. Step 1 — Authenticate to GitHub Packages</h2>
+<p>The package is private, so each app (and CI) must authenticate to GitHub's npm registry.</p>
+<div class="step"><span class="num">1</span><div>Create a token: <strong>GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)</strong>, scopes <code>read:packages</code> + <code>repo</code>.</div></div>
+<div class="step"><span class="num">2</span><div>In the <strong>app's root folder</strong>, create a file named <code>.npmrc</code>:</div></div>
+<pre>@9491340980:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NPM_TOKEN}</pre>
+<div class="step"><span class="num">3</span><div>Set the token in your shell (PowerShell) before installing:</div></div>
+<pre>$env:NPM_TOKEN = "ghp_your_read_token"</pre>
+<div class="warn"><strong>Never</strong> paste the token inside <code>${ }</code> — that means "an environment variable name". Either use <code>${NPM_TOKEN}</code> + set the env var, or put the raw <code>ghp_…</code> value directly after <code>=</code> (and then add <code>.npmrc</code> to <code>.gitignore</code>).</div>
+
+<h2 id="install">3. Step 2 — Install</h2>
+<pre>npm install @9491340980/controls</pre>
+<p>Only if you use the <span class="pill">ch-ng-*</span> wrapper controls (Material datepicker, ng-select, file-drop), also install their peer dependencies:</p>
+<pre>npm install @angular/material @angular/cdk @ng-select/ng-select ngx-file-drop @angular/animations</pre>
+<p class="muted">The native <code>ch-*</code> controls need none of these — the library stays dependency-free unless you opt into the wrappers.</p>
+
+<h2 id="theme">4. Step 3 — Load the theme</h2>
+<p>Import the design tokens <strong>once</strong> in your global <code>styles.scss</code>:</p>
+<pre><span class="c">/* styles.scss */</span>
+@use '@9491340980/controls/styles/theme';</pre>
+<p>If you use the <code>ch-ng-*</code> controls, also add their third-party CSS:</p>
+<pre>@import '@angular/material/prebuilt-themes/azure-blue.css';
+@import '@ng-select/ng-select/themes/default.theme.css';</pre>
+<div class="note">SCSS rule: all <code>@use</code> lines must appear <strong>before</strong> any <code>@import</code> or other rules, at the very top of the file.</div>
+<p>And, only for the Material-backed <code>ch-ng-datepicker</code>, enable animations in <code>app.config.ts</code>:</p>
+<pre>import { provideAnimations } from '@angular/platform-browser/animations';
+
+export const appConfig = {
+  providers: [ provideAnimations() ],
+};</pre>
+
+<h2 id="tailwind">5. Step 4 — Tailwind preset (optional)</h2>
+<p>If your app uses Tailwind, extend the shared preset so utilities and components share the same tokens:</p>
+<pre><span class="c">// tailwind.config.js</span>
+module.exports = {
+  presets: [require('@9491340980/controls/tailwind-preset')],
+  content: ['./src/**/*.{html,ts}'],
+};</pre>
+
+<h2 id="use">6. Step 5 — Use the controls</h2>
+<p>All controls are <strong>standalone</strong>. Import the ones you use where you use them.</p>
+
+<h3>In a standalone component</h3>
+<pre>import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ChButton, ChCard, ChInput } from '@9491340980/controls';
+
+@Component({
+  selector: 'app-patient',
+  imports: [FormsModule, ChButton, ChCard, ChInput],
+  templateUrl: './patient.html',
+})
+export class PatientComponent {}</pre>
+
+<h3>In an NgModule-based app</h3>
+<p>Standalone components go in the module's <code>imports</code> (not <code>declarations</code>):</p>
+<pre>import { ChButton, ChCard, ChInput } from '@9491340980/controls';
+
+@NgModule({
+  declarations: [PatientComponent],
+  imports: [FormsModule, ChButton, ChCard, ChInput],  <span class="c">// ← here</span>
+})
+export class PatientModule {}</pre>
+
+<h3>Template</h3>
+<pre>&lt;ch-card title="New patient"&gt;
+  &lt;ch-input [(ngModel)]="name" placeholder="Full name" /&gt;
+  &lt;ch-button variant="primary" (clicked)="save()"&gt;Save&lt;/ch-button&gt;
+&lt;/ch-card&gt;</pre>
+
+<h2 id="forms">7. Forms, toasts &amp; modals</h2>
+<h3>Forms</h3>
+<p>Every form control implements <code>ControlValueAccessor</code>, so it works with template-driven and reactive forms:</p>
+<pre>&lt;ch-input [(ngModel)]="email" type="email" /&gt;
+&lt;ch-select formControlName="country" [options]="countries" /&gt;</pre>
+
+<h3>Toasts</h3>
+<p>Render the toaster once near the app root, then call the service anywhere:</p>
+<pre>&lt;ch-toaster /&gt;</pre>
+<pre>import { ChToastService } from '@9491340980/controls';
+
+private toast = inject(ChToastService);
+this.toast.success('Saved!');
+this.toast.error('Something went wrong');</pre>
+
+<h3>Modal</h3>
+<pre>&lt;ch-modal [(open)]="showDialog" title="Confirm"&gt;
+  &lt;p&gt;Are you sure?&lt;/p&gt;
+  &lt;div modal-footer&gt;
+    &lt;ch-button variant="outline" (clicked)="showDialog=false"&gt;Cancel&lt;/ch-button&gt;
+    &lt;ch-button variant="primary" (clicked)="confirm()"&gt;OK&lt;/ch-button&gt;
+  &lt;/div&gt;
+&lt;/ch-modal&gt;</pre>
+
+<h2 id="catalog">8. Control catalog</h2>
+<p><strong>Native controls</strong> (no third-party dependencies):</p>
+<table>
+  <tr><th>Group</th><th>Selectors</th></tr>
+  <tr><td>Buttons &amp; actions</td><td><code>ch-button</code>, <code>ch-icon-button</code>, <code>ch-button-group</code>, <code>ch-link</code></td></tr>
+  <tr><td>Forms</td><td><code>ch-form-field</code>, <code>ch-input</code>, <code>ch-textarea</code>, <code>ch-select</code>, <code>ch-checkbox</code>, <code>ch-switch</code>, <code>ch-radio-group</code>, <code>ch-stepper</code>, <code>ch-otp</code>, <code>ch-datepicker</code>, <code>ch-multi-select</code>, <code>ch-autocomplete</code>, <code>ch-file-upload</code></td></tr>
+  <tr><td>Data display</td><td><code>ch-card</code>, <code>ch-badge</code>, <code>ch-tag</code>, <code>ch-avatar</code>, <code>ch-empty-state</code>, <code>ch-table</code>, <code>ch-pagination</code>, <code>ch-stat-card</code>, <code>[chTooltip]</code></td></tr>
+  <tr><td>Feedback</td><td><code>ch-alert</code>, <code>ch-spinner</code>, <code>ch-progress-bar</code>, <code>ch-skeleton</code>, <code>ch-modal</code>, <code>ch-toaster</code> + <code>ChToastService</code></td></tr>
+  <tr><td>Navigation</td><td><code>ch-tabs</code>/<code>ch-tab</code>, <code>ch-accordion-item</code>, <code>ch-breadcrumbs</code>, <code>ch-dropdown</code>, <code>ch-steps</code></td></tr>
+  <tr><td>Layout</td><td><code>ch-divider</code>, <code>ch-stack</code>, <code>ch-page-header</code>, <code>ch-container</code>, <code>ch-auth-layout</code></td></tr>
+</table>
+<p><strong>Third-party-backed wrappers</strong> <span class="pill">need peer deps</span>:</p>
+<table>
+  <tr><th>Selector</th><th>Backed by</th></tr>
+  <tr><td><code>ch-ng-datepicker</code></td><td>@angular/material</td></tr>
+  <tr><td><code>ch-ng-multi-select</code></td><td>@ng-select/ng-select</td></tr>
+  <tr><td><code>ch-ng-autocomplete</code></td><td>@ng-select/ng-select</td></tr>
+  <tr><td><code>ch-ng-file-upload</code></td><td>ngx-file-drop</td></tr>
+</table>
+
+<h2 id="theming">9. Theming &amp; dark mode</h2>
+<p>Everything is driven by CSS variables, so theming is just overriding tokens <em>after</em> the theme import:</p>
+<pre><span class="c">/* this app's brand */</span>
+:root { --ch-color-primary: #2563eb; }
+
+<span class="c">/* dark mode */</span>
+&lt;html data-theme="dark"&gt;
+
+<span class="c">/* per-tenant */</span>
+.tenant-acme { --ch-color-primary: #16a34a; }</pre>
+
+<h2 id="update">10. Updating versions</h2>
+<pre>npm update @9491340980/controls
+<span class="c"># or pin a version</span>
+npm install @9491340980/controls@1.0.2</pre>
+
+<h2 id="trouble">11. Troubleshooting</h2>
+<table>
+  <tr><th>Error</th><th>Cause &amp; fix</th></tr>
+  <tr>
+    <td><code>NG8001: 'ch-…' is not a known element</code></td>
+    <td>The component isn't imported. Add it to the component's <code>imports</code> (standalone) or the module's <code>imports</code> (NgModule).</td>
+  </tr>
+  <tr>
+    <td><code>@use rules must be written before any other rules</code></td>
+    <td>Move every <code>@use</code> to the very top of <code>styles.scss</code>, above all <code>@import</code> and CSS rules.</td>
+  </tr>
+  <tr>
+    <td><code>401 Unauthorized</code> on install</td>
+    <td>Token missing/expired, or the env var isn't set in <em>this</em> terminal. Run <code>echo $env:NPM_TOKEN</code>; set a valid <code>read:packages</code>+<code>repo</code> token. Don't wrap the token in <code>${ }</code>.</td>
+  </tr>
+  <tr>
+    <td><code>404 / Cannot find package</code></td>
+    <td>The <code>.npmrc</code> scope line is missing — confirm <code>@9491340980:registry=https://npm.pkg.github.com</code> exists in the app root.</td>
+  </tr>
+  <tr>
+    <td><code>Could not resolve "@angular/animations/browser"</code></td>
+    <td>Install <code>@angular/animations</code> (needed for <code>ch-ng-datepicker</code> via <code>provideAnimations()</code>).</td>
+  </tr>
+  <tr>
+    <td>Controls render unstyled</td>
+    <td>You didn't import the theme. Add <code>@use '@9491340980/controls/styles/theme';</code> to global styles.</td>
+  </tr>
+</table>
+
+<footer>
+  @9491340980/controls &middot; Angular 20 &middot; Generated integration guide.
+  Browse all components &amp; live samples in Storybook (<code>npm run storybook</code> in the library repo).
+</footer>
+</div>
+</body>
+</html>

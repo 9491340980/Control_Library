@@ -4,7 +4,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "controls": [
+      "@9491340980/controls": [
         "./dist/controls"
       ]
     },
